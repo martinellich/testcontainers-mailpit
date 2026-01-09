@@ -11,7 +11,7 @@
 
     <name>Testcontainers Mailpit</name>
     <description>Testcontainers module for Mailpit - Mailpit is a small, fast, low memory, zero-dependency,
-        multi-platform email testing tool & API for developers.
+        multi-platform email testing tool and API for developers.
     </description>
 
     <url>https://github.com/martinellich/testcontainers-mailpit</url>
