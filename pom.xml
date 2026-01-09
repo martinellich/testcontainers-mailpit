@@ -10,7 +10,8 @@
     <packaging>jar</packaging>
 
     <name>Testcontainers Mailpit</name>
-    <description>Testcontainers module for Mailpit - a simple SMTP server for testing email functionality
+    <description>Testcontainers module for Mailpit - Mailpit is a small, fast, low memory, zero-dependency,
+        multi-platform email testing tool & API for developers.
     </description>
 
     <url>https://github.com/martinellich/testcontainers-mailpit</url>
