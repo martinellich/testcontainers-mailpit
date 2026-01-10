@@ -10,7 +10,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>ch.martinelli.oss</groupId>
     <artifactId>testcontainers-mailpit</artifactId>
-    <version>0.1.0</version>
+    <version>1.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -50,6 +50,64 @@ class EmailServiceTest {
         assertThat(messages.get(0).subject()).isEqualTo("Test Subject");
     }
 }
+```
+
+### Spring Boot ServiceConnection
+
+For Spring Boot 3.1+ applications, you can use the `@ServiceConnection` annotation for automatic configuration. This eliminates the need to manually configure connection properties.
+
+```java
+@SpringBootTest
+@Testcontainers
+class EmailServiceTest {
+
+    @Container
+    @ServiceConnection
+    static MailpitContainer mailpit = new MailpitContainer();
+
+    @Autowired
+    MailpitClient client;
+
+    @Autowired
+    MailpitConnectionDetails connectionDetails;
+
+    @Test
+    void shouldSendAndVerifyEmail() throws Exception {
+        // Configure mail sender using connection details
+        Properties props = new Properties();
+        props.put("mail.smtp.host", connectionDetails.getHost());
+        props.put("mail.smtp.port", String.valueOf(connectionDetails.getPort()));
+
+        Session session = Session.getInstance(props);
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress("sender@example.com"));
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress("recipient@example.com"));
+        message.setSubject("Test Subject");
+        message.setText("Hello, this is a test email!");
+
+        Transport.send(message);
+
+        // The autowired client automatically uses the container's dynamic HTTP port
+        List<Message> messages = client.getAllMessages();
+        assertThat(messages).hasSize(1);
+        assertThat(messages.get(0).subject()).isEqualTo("Test Subject");
+    }
+}
+```
+
+When using `@ServiceConnection`, the following beans are automatically configured:
+
+| Bean                       | Description                                              |
+|----------------------------|----------------------------------------------------------|
+| `MailpitClient`            | Pre-configured client for the Mailpit REST API          |
+| `MailpitConnectionDetails` | Connection details with host, SMTP port, and HTTP URL   |
+
+You can also configure Mailpit via properties when not using Testcontainers:
+
+```properties
+mailpit.host=localhost
+mailpit.port=1025
+mailpit.http-url=http://localhost:8025
 ```
 
 ### Container Configuration
