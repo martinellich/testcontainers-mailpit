@@ -6,11 +6,12 @@
 
     <groupId>ch.martinelli.oss</groupId>
     <artifactId>testcontainers-mailpit</artifactId>
-    <version>0.0.1</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
 
     <name>Testcontainers Mailpit</name>
-    <description>Testcontainers module for Mailpit - a simple SMTP server for testing email functionality
+    <description>Testcontainers module for Mailpit - Mailpit is a small, fast, low memory, zero-dependency,
+        multi-platform email testing tool and API for developers.
     </description>
 
     <url>https://github.com/martinellich/testcontainers-mailpit</url>
@@ -51,6 +52,7 @@
         <junit.version>6.0.2</junit.version>
         <assertj.version>3.27.6</assertj.version>
         <slf4j.version>2.0.17</slf4j.version>
+        <spring-boot.version>4.0.1</spring-boot.version>
 
         <spring-javaformat-maven-plugin.version>0.0.47</spring-javaformat-maven-plugin.version>
     </properties>
@@ -81,6 +83,14 @@
             <groupId>jakarta.mail</groupId>
             <artifactId>jakarta.mail-api</artifactId>
             <version>${jakarta.mail.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Spring Boot Testcontainers (optional, for @ServiceConnection support) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <version>${spring-boot.version}</version>
             <optional>true</optional>
         </dependency>
 
