@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.service.connection.ConnectionDetailsFactory=\
-ch.martinelli.oss.testcontainers.mailpit.MailpitConnectionDetailsFactory
+ch.martinelli.oss.testcontainers.mailpit.MailpitContainerConnectionDetailsFactory
