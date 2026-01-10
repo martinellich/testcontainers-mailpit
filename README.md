@@ -65,7 +65,6 @@ public class TestcontainersConfiguration {
     MailpitContainer mailpitContainer() {
         return new MailpitContainer();
     }
-
 }
 ```
 ```java
