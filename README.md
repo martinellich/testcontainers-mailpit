@@ -57,13 +57,21 @@ class EmailServiceTest {
 For Spring Boot 3.1+ applications, you can use the `@ServiceConnection` annotation for automatic configuration. This eliminates the need to manually configure connection properties.
 
 ```java
-@SpringBootTest
-@Testcontainers
-class EmailServiceTest {
+@TestConfiguration(proxyBeanMethods = false)
+public class TestcontainersConfiguration {
 
-    @Container
+    @Bean
     @ServiceConnection
-    static MailpitContainer mailpit = new MailpitContainer();
+    MailpitContainer mailpitContainer() {
+        return new MailpitContainer();
+    }
+
+}
+```
+```java
+@Import(TestcontainersConfiguration.class)
+@SpringBootTest
+class EmailServiceTest {
 
     @Autowired
     MailpitClient client;
