@@ -94,6 +94,14 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Spring Boot Autoconfigure (optional, for auto-configuration support) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>${spring-boot.version}</version>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.testcontainers</groupId>
