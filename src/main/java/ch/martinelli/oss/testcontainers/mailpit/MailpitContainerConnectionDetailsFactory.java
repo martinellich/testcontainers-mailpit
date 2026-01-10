@@ -7,11 +7,10 @@ import org.springframework.boot.testcontainers.service.connection.ContainerConne
  * {@link ContainerConnectionDetailsFactory} to create {@link MailpitConnectionDetails}
  * from a {@link MailpitContainer}.
  */
-class MailpitContainerConnectionDetailsFactory
+public class MailpitContainerConnectionDetailsFactory
 		extends ContainerConnectionDetailsFactory<MailpitContainer, MailpitConnectionDetails> {
 
-	MailpitContainerConnectionDetailsFactory() {
-		super("mailpit");
+	public MailpitContainerConnectionDetailsFactory() {
 	}
 
 	@Override
