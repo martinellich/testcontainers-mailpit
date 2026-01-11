@@ -323,6 +323,27 @@ class MailpitAssertionsTest {
 			assertThat(mailpit).messages().allMessagesSatisfy(msg -> msg.isFrom("sender@test.com").isUnread());
 		}
 
+		@Test
+		void shouldHasMessageSatisfying() throws MessagingException {
+			sendEmail("sender@test.com", "recipient@test.com", "Email 1", "Body 1");
+			sendEmail("sender@test.com", "recipient@test.com", "Email 2", "Body 2");
+			sendEmail("sender@test.com", "recipient@test.com", "Email 3", "Body 3");
+
+			assertThat(mailpit).messages()
+				.hasMessageSatisfying(0, msg -> msg.hasSubject("Email 3").isFrom("sender@test.com").isUnread())
+				.hasMessageSatisfying(1, msg -> msg.hasSubject("Email 2").hasRecipient("recipient@test.com"))
+				.hasMessageSatisfying(2, msg -> msg.hasSubject("Email 1"));
+		}
+
+		@Test
+		void shouldFailWhenIndexOutOfBounds() throws MessagingException {
+			sendEmail("sender@test.com", "recipient@test.com", "Email 1", "Body");
+
+			assertThatThrownBy(() -> assertThat(mailpit).messages()
+				.hasMessageSatisfying(5, msg -> msg.hasSubject("Email 1")))
+				.isInstanceOf(AssertionError.class);
+		}
+
 	}
 
 	@Nested

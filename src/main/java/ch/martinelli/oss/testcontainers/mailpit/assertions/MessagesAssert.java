@@ -180,6 +180,20 @@ public class MessagesAssert extends AbstractIterableAssert<MessagesAssert, List<
 	}
 
 	/**
+	 * Applies MessageAssert assertions on a message at the specified index.
+	 * @param index the index of the message
+	 * @param assertion the assertion to apply
+	 * @return this assertion object
+	 * @throws AssertionError if the index is out of bounds
+	 */
+	public MessagesAssert hasMessageSatisfying(int index, Consumer<MessageAssert> assertion) {
+		isNotNull();
+		Assertions.assertThat(actual).hasSizeGreaterThan(index);
+		assertion.accept(new MessageAssert(actual.get(index)));
+		return this;
+	}
+
+	/**
 	 * Verifies that all messages are from the given sender.
 	 * @param senderAddress the expected sender email address
 	 * @return this assertion object
