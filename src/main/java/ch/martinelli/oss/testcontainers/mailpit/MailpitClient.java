@@ -21,6 +21,8 @@ public class MailpitClient {
 
 	private static final String APPLICATION_JSON = "application/json";
 
+	private static final String PATH = "/api/v1/messages";
+
 	private final String baseUrl;
 
 	private final HttpClient httpClient;
@@ -42,7 +44,7 @@ public class MailpitClient {
 	public List<Message> getAllMessages() {
 		try {
 			HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create(baseUrl + "/api/v1/messages"))
+				.uri(URI.create(baseUrl + PATH))
 				.header("Accept", APPLICATION_JSON)
 				.GET()
 				.build();
@@ -178,10 +180,7 @@ public class MailpitClient {
 	 */
 	public void deleteAllMessages() {
 		try {
-			HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create(baseUrl + "/api/v1/messages"))
-				.DELETE()
-				.build();
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(baseUrl + PATH)).DELETE().build();
 
 			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -204,7 +203,7 @@ public class MailpitClient {
 			String jsonBody = objectMapper.writeValueAsString(new DeleteRequest(ids));
 
 			HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create(baseUrl + "/api/v1/messages"))
+				.uri(URI.create(baseUrl + PATH))
 				.header("Content-Type", APPLICATION_JSON)
 				.method("DELETE", HttpRequest.BodyPublishers.ofString(jsonBody))
 				.build();
