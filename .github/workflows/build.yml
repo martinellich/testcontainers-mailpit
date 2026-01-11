@@ -30,4 +30,4 @@ jobs:
                         ${{ runner.os }}-maven-
 
             -   name: Maven Test
-                run: mvn test
+                run: ./mvnw -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Pcoverage -Dsonar.projectKey=martinellich_testcontainers-mailpit
