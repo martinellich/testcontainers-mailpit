@@ -1,6 +1,7 @@
 package ch.martinelli.oss.testcontainers.mailpit;
 
 import jakarta.mail.Message.RecipientType;
+import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
@@ -29,7 +30,7 @@ class MailpitContainerTest {
 	}
 
 	@Test
-	void shouldCatchEmailSentViaSMTP() throws Exception {
+	void shouldCatchEmailSentViaSMTP() throws MessagingException {
 		// Clear any existing messages
 		MailpitClient client = mailpit.getClient();
 		client.deleteAllMessages();
@@ -53,7 +54,7 @@ class MailpitContainerTest {
 	}
 
 	@Test
-	void shouldSupportMultipleRecipients() throws Exception {
+	void shouldSupportMultipleRecipients() throws MessagingException {
 		MailpitClient client = mailpit.getClient();
 		client.deleteAllMessages();
 
@@ -71,7 +72,7 @@ class MailpitContainerTest {
 	}
 
 	@Test
-	void shouldDeleteMessages() throws Exception {
+	void shouldDeleteMessages() throws MessagingException {
 		MailpitClient client = mailpit.getClient();
 		client.deleteAllMessages();
 
@@ -88,7 +89,7 @@ class MailpitContainerTest {
 	}
 
 	@Test
-	void shouldRetrieveMessageSource() throws Exception {
+	void shouldRetrieveMessageSource() throws MessagingException {
 		MailpitClient client = mailpit.getClient();
 		client.deleteAllMessages();
 
@@ -102,7 +103,7 @@ class MailpitContainerTest {
 			.contains("Subject: Source Test");
 	}
 
-	private void sendEmail(String from, String to, String subject, String body) throws Exception {
+	private void sendEmail(String from, String to, String subject, String body) throws MessagingException {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailpit.getSmtpHost());
 		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));
@@ -118,7 +119,7 @@ class MailpitContainerTest {
 	}
 
 	private void sendEmailToMultipleRecipients(String from, List<String> recipients, String subject, String body)
-			throws Exception {
+			throws MessagingException {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailpit.getSmtpHost());
 		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));

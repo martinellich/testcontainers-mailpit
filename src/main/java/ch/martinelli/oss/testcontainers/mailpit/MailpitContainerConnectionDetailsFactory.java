@@ -11,6 +11,7 @@ public class MailpitContainerConnectionDetailsFactory
 		extends ContainerConnectionDetailsFactory<MailpitContainer, MailpitConnectionDetails> {
 
 	public MailpitContainerConnectionDetailsFactory() {
+		// singleton
 	}
 
 	@Override

@@ -134,6 +134,7 @@ public class MessagesAssert extends AbstractIterableAssert<MessagesAssert, List<
 	 * @return MessageAssert for the first message
 	 * @throws AssertionError if the list is empty
 	 */
+	@Override
 	public MessageAssert first() {
 		isNotNull();
 		Assertions.assertThat(actual).isNotEmpty();
@@ -145,6 +146,7 @@ public class MessagesAssert extends AbstractIterableAssert<MessagesAssert, List<
 	 * @return MessageAssert for the last message
 	 * @throws AssertionError if the list is empty
 	 */
+	@Override
 	public MessageAssert last() {
 		isNotNull();
 		Assertions.assertThat(actual).isNotEmpty();
@@ -157,6 +159,7 @@ public class MessagesAssert extends AbstractIterableAssert<MessagesAssert, List<
 	 * @return MessageAssert for the message at the index
 	 * @throws AssertionError if the index is out of bounds
 	 */
+	@Override
 	public MessageAssert element(int index) {
 		isNotNull();
 		Assertions.assertThat(actual).hasSizeGreaterThan(index);
@@ -173,6 +176,23 @@ public class MessagesAssert extends AbstractIterableAssert<MessagesAssert, List<
 		for (Message message : actual) {
 			assertion.accept(new MessageAssert(message));
 		}
+		return this;
+	}
+
+	/**
+	 * Applies MessageAssert assertions on a message at the specified index.
+	 * @param index the index of the message
+	 * @param assertion the assertion to apply
+	 * @return this assertion object
+	 * @throws AssertionError if the index is out of bounds
+	 */
+	public MessagesAssert hasMessageSatisfying(int index, Consumer<MessageAssert> assertion) {
+		isNotNull();
+		if (index < 0) {
+			failWithMessage("Index must be non-negative but was: %d", index);
+		}
+		Assertions.assertThat(actual).hasSizeGreaterThan(index);
+		assertion.accept(new MessageAssert(actual.get(index)));
 		return this;
 	}
 

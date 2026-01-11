@@ -2,6 +2,7 @@ package ch.martinelli.oss.testcontainers.mailpit.assertions;
 
 import ch.martinelli.oss.testcontainers.mailpit.MailpitContainer;
 import jakarta.mail.Message.RecipientType;
+import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.io.UnsupportedEncodingException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Properties;
@@ -45,14 +47,14 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldAssertHasMessages() throws Exception {
+		void shouldAssertHasMessages() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Test", "Body");
 
 			assertThat(mailpit).hasMessages();
 		}
 
 		@Test
-		void shouldAssertMessageCount() throws Exception {
+		void shouldAssertMessageCount() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Test 1", "Body");
 			sendEmail("sender@test.com", "recipient@test.com", "Test 2", "Body");
 
@@ -66,7 +68,7 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldFailWhenExpectingNoMessagesButSome() throws Exception {
+		void shouldFailWhenExpectingNoMessagesButSome() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Test", "Body");
 
 			assertThatThrownBy(() -> assertThat(mailpit).hasNoMessages()).isInstanceOf(AssertionError.class)
@@ -74,35 +76,35 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldAssertHasMessageWithSubject() throws Exception {
+		void shouldAssertHasMessageWithSubject() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Welcome Email", "Body");
 
 			assertThat(mailpit).hasMessageWithSubject("Welcome Email");
 		}
 
 		@Test
-		void shouldAssertHasMessageTo() throws Exception {
+		void shouldAssertHasMessageTo() throws MessagingException {
 			sendEmail("sender@test.com", "john@example.com", "Test", "Body");
 
 			assertThat(mailpit).hasMessageTo("john@example.com");
 		}
 
 		@Test
-		void shouldAssertHasMessageFrom() throws Exception {
+		void shouldAssertHasMessageFrom() throws MessagingException {
 			sendEmail("noreply@company.com", "recipient@test.com", "Test", "Body");
 
 			assertThat(mailpit).hasMessageFrom("noreply@company.com");
 		}
 
 		@Test
-		void shouldGetFirstMessage() throws Exception {
+		void shouldGetFirstMessage() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "First Email", "Body");
 
 			assertThat(mailpit).firstMessage().hasSubject("First Email");
 		}
 
 		@Test
-		void shouldGetLastMessage() throws Exception {
+		void shouldGetLastMessage() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "First Email", "Body 1");
 			sendEmail("sender@test.com", "recipient@test.com", "Second Email", "Body 2");
 
@@ -110,7 +112,7 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldGetAllMessages() throws Exception {
+		void shouldGetAllMessages() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Email 1", "Body");
 			sendEmail("sender@test.com", "recipient@test.com", "Email 2", "Body");
 
@@ -123,13 +125,13 @@ class MailpitAssertionsTest {
 	class MessageAwaiterTests {
 
 		@Test
-		void shouldAwaitMessage() throws Exception {
+		void shouldAwaitMessage() {
 			new Thread(() -> {
 				try {
 					Thread.sleep(500);
 					sendEmail("sender@test.com", "recipient@test.com", "Async Test", "Body");
 				}
-				catch (Exception e) {
+				catch (InterruptedException | MessagingException e) {
 					throw new RuntimeException(e);
 				}
 			}).start();
@@ -138,7 +140,7 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldAwaitMessageWithFilters() throws Exception {
+		void shouldAwaitMessageWithFilters() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Async Test", "Body");
 
 			assertThat(mailpit).awaitMessage()
@@ -163,7 +165,7 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldFailWhenAssertingAbsentButPresent() throws Exception {
+		void shouldFailWhenAssertingAbsentButPresent() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Existing", "Body");
 
 			assertThatThrownBy(() -> assertThat(mailpit).awaitMessage().withSubject("Existing").isAbsent())
@@ -172,7 +174,7 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldAwaitMessageCount() throws Exception {
+		void shouldAwaitMessageCount() {
 			new Thread(() -> {
 				try {
 					Thread.sleep(200);
@@ -180,7 +182,7 @@ class MailpitAssertionsTest {
 					Thread.sleep(200);
 					sendEmail("sender@test.com", "recipient@test.com", "Email 2", "Body");
 				}
-				catch (Exception e) {
+				catch (InterruptedException | MessagingException e) {
 					throw new RuntimeException(e);
 				}
 			}).start();
@@ -194,56 +196,56 @@ class MailpitAssertionsTest {
 	class MessageAssertTests {
 
 		@Test
-		void shouldAssertSubject() throws Exception {
+		void shouldAssertSubject() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Welcome", "Body");
 
 			assertThat(mailpit).firstMessage().hasSubject("Welcome");
 		}
 
 		@Test
-		void shouldAssertSubjectContaining() throws Exception {
+		void shouldAssertSubjectContaining() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Order Confirmation #12345", "Body");
 
 			assertThat(mailpit).firstMessage().hasSubjectContaining("Confirmation");
 		}
 
 		@Test
-		void shouldAssertFrom() throws Exception {
+		void shouldAssertFrom() throws MessagingException {
 			sendEmail("noreply@example.com", "recipient@test.com", "Test", "Body");
 
 			assertThat(mailpit).firstMessage().isFrom("noreply@example.com");
 		}
 
 		@Test
-		void shouldAssertRecipient() throws Exception {
+		void shouldAssertRecipient() throws MessagingException {
 			sendEmail("sender@test.com", "john@example.com", "Test", "Body");
 
 			assertThat(mailpit).firstMessage().hasRecipient("john@example.com");
 		}
 
 		@Test
-		void shouldAssertRecipientCount() throws Exception {
+		void shouldAssertRecipientCount() throws MessagingException {
 			sendEmailToMultiple("sender@test.com", new String[] { "a@test.com", "b@test.com" }, "Test", "Body");
 
 			assertThat(mailpit).firstMessage().hasRecipientCount(2);
 		}
 
 		@Test
-		void shouldAssertNoAttachments() throws Exception {
+		void shouldAssertNoAttachments() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Test", "Body");
 
 			assertThat(mailpit).firstMessage().hasNoAttachments();
 		}
 
 		@Test
-		void shouldAssertUnread() throws Exception {
+		void shouldAssertUnread() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Test", "Body");
 
 			assertThat(mailpit).firstMessage().isUnread();
 		}
 
 		@Test
-		void shouldAssertCreatedAfter() throws Exception {
+		void shouldAssertCreatedAfter() throws MessagingException {
 			Instant before = Instant.now().minusSeconds(1);
 			sendEmail("sender@test.com", "recipient@test.com", "Test", "Body");
 
@@ -251,7 +253,7 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldAssertSnippetContaining() throws Exception {
+		void shouldAssertSnippetContaining() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Test", "This is the email body content");
 
 			assertThat(mailpit).firstMessage().hasSnippetContaining("email body");
@@ -263,7 +265,7 @@ class MailpitAssertionsTest {
 	class MessagesAssertTests {
 
 		@Test
-		void shouldFilterBySubject() throws Exception {
+		void shouldFilterBySubject() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Newsletter", "Body");
 			sendEmail("sender@test.com", "recipient@test.com", "Invoice", "Body");
 			sendEmail("sender@test.com", "recipient@test.com", "Newsletter", "Body");
@@ -272,7 +274,7 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldFilterBySender() throws Exception {
+		void shouldFilterBySender() throws MessagingException {
 			sendEmail("newsletter@company.com", "recipient@test.com", "Email 1", "Body");
 			sendEmail("support@company.com", "recipient@test.com", "Email 2", "Body");
 
@@ -280,7 +282,7 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldFilterByRecipient() throws Exception {
+		void shouldFilterByRecipient() throws MessagingException {
 			sendEmail("sender@test.com", "alice@test.com", "Email 1", "Body");
 			sendEmail("sender@test.com", "bob@test.com", "Email 2", "Body");
 
@@ -288,7 +290,7 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldAssertAllMatch() throws Exception {
+		void shouldAssertAllMatch() throws MessagingException {
 			sendEmail("newsletter@company.com", "recipient@test.com", "Email 1", "Body");
 			sendEmail("newsletter@company.com", "recipient@test.com", "Email 2", "Body");
 
@@ -296,7 +298,7 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldAssertContainsMessageWithSubject() throws Exception {
+		void shouldAssertContainsMessageWithSubject() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Welcome", "Body");
 			sendEmail("sender@test.com", "recipient@test.com", "Goodbye", "Body");
 
@@ -304,7 +306,7 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldGetFirstAndLast() throws Exception {
+		void shouldGetFirstAndLast() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "First", "Body");
 			sendEmail("sender@test.com", "recipient@test.com", "Second", "Body");
 			sendEmail("sender@test.com", "recipient@test.com", "Third", "Body");
@@ -314,11 +316,42 @@ class MailpitAssertionsTest {
 		}
 
 		@Test
-		void shouldAllMessagesSatisfy() throws Exception {
+		void shouldAllMessagesSatisfy() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Email 1", "Body");
 			sendEmail("sender@test.com", "recipient@test.com", "Email 2", "Body");
 
 			assertThat(mailpit).messages().allMessagesSatisfy(msg -> msg.isFrom("sender@test.com").isUnread());
+		}
+
+		@Test
+		void shouldHasMessageSatisfying() throws MessagingException {
+			sendEmail("sender@test.com", "recipient@test.com", "Email 1", "Body 1");
+			sendEmail("sender@test.com", "recipient@test.com", "Email 2", "Body 2");
+			sendEmail("sender@test.com", "recipient@test.com", "Email 3", "Body 3");
+
+			assertThat(mailpit).messages()
+				.hasMessageSatisfying(0, msg -> msg.hasSubject("Email 3").isFrom("sender@test.com").isUnread())
+				.hasMessageSatisfying(1, msg -> msg.hasSubject("Email 2").hasRecipient("recipient@test.com"))
+				.hasMessageSatisfying(2, msg -> msg.hasSubject("Email 1"));
+		}
+
+		@Test
+		void shouldFailWhenIndexOutOfBounds() throws MessagingException {
+			sendEmail("sender@test.com", "recipient@test.com", "Email 1", "Body");
+
+			assertThatThrownBy(
+					() -> assertThat(mailpit).messages().hasMessageSatisfying(5, msg -> msg.hasSubject("Email 1")))
+				.isInstanceOf(AssertionError.class);
+		}
+
+		@Test
+		void shouldFailWhenIndexIsNegative() throws MessagingException {
+			sendEmail("sender@test.com", "recipient@test.com", "Email 1", "Body");
+
+			assertThatThrownBy(
+					() -> assertThat(mailpit).messages().hasMessageSatisfying(-1, msg -> msg.hasSubject("Email 1")))
+				.isInstanceOf(AssertionError.class)
+				.hasMessageContaining("Index must be non-negative but was: -1");
 		}
 
 	}
@@ -327,7 +360,7 @@ class MailpitAssertionsTest {
 	class AddressAssertTests {
 
 		@Test
-		void shouldAssertAddressViaMessage() throws Exception {
+		void shouldAssertAddressViaMessage() throws MessagingException, UnsupportedEncodingException {
 			sendEmailWithName("John Doe", "john@example.com", "recipient@test.com", "Test", "Body");
 
 			assertThat(mailpit).firstMessage()
@@ -340,7 +373,7 @@ class MailpitAssertionsTest {
 
 	}
 
-	private void sendEmail(String from, String to, String subject, String body) throws Exception {
+	private void sendEmail(String from, String to, String subject, String body) throws MessagingException {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailpit.getSmtpHost());
 		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));
@@ -356,7 +389,7 @@ class MailpitAssertionsTest {
 	}
 
 	private void sendEmailWithName(String fromName, String fromAddress, String to, String subject, String body)
-			throws Exception {
+			throws MessagingException, UnsupportedEncodingException {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailpit.getSmtpHost());
 		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));
@@ -371,7 +404,7 @@ class MailpitAssertionsTest {
 		Transport.send(message);
 	}
 
-	private void sendEmailToMultiple(String from, String[] to, String subject, String body) throws Exception {
+	private void sendEmailToMultiple(String from, String[] to, String subject, String body) throws MessagingException {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailpit.getSmtpHost());
 		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));

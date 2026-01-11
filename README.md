@@ -12,7 +12,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>ch.martinelli.oss</groupId>
     <artifactId>testcontainers-mailpit</artifactId>
-    <version>1.0.1</version>
+    <version>1.2.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -30,7 +30,7 @@ class EmailServiceTest {
     static MailpitContainer mailpit = new MailpitContainer();
 
     @Test
-    void shouldSendEmail() throws Exception {
+    void shouldSendEmail() throws MessagingException {
         // Configure your mail sender
         Properties props = new Properties();
         props.put("mail.smtp.host", mailpit.getSmtpHost());
@@ -160,20 +160,14 @@ int count = client.getMessageCount();
 Message message = client.getMessage("abc123");
 
 // Get message content
-String html = client.getMessageHtml("abc123");    // HTML body
-String plain = client.getMessagePlain("abc123");  // Plain text body
+String html = client.getMessageHtml("abc123");     // HTML body
+String plain = client.getMessagePlain("abc123");   // Plain text body
 String source = client.getMessageSource("abc123"); // Raw email source
 
 // Delete messages
-client.
-
-deleteMessage("abc123");       // Delete specific message
-client.
-
-deleteMessages(List.of("id1", "id2")); // Delete multiple messages
-        client.
-
-deleteAllMessages();           // Delete all messages
+client.deleteMessage("abc123");               // Delete specific message
+client.deleteMessages(List.of("id1", "id2")); // Delete multiple messages
+client.deleteAllMessages();                   // Delete all messages
 ```
 
 ### AssertJ Assertions
@@ -303,6 +297,13 @@ void shouldFilterMessages() {
         .allMessagesSatisfy(msg -> msg
             .isFrom("noreply@company.com")
             .hasNoAttachments());
+
+    // Assert on specific messages by index
+    assertThat(mailpit)
+        .messages()
+        .hasMessageSatisfying(0, msg -> msg.hasSubject("Welcome").isUnread())
+        .hasMessageSatisfying(1, msg -> msg.hasSubject("Confirmation").hasRecipient("user@example.com"))
+        .hasMessageSatisfying(2, msg -> msg.hasSubject("Newsletter"));
 }
 ```
 
