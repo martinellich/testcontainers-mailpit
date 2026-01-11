@@ -1,6 +1,7 @@
 package ch.martinelli.oss.testcontainers.mailpit;
 
 import jakarta.mail.Message.RecipientType;
+import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
@@ -31,7 +32,7 @@ class MailpitClientTest {
 	}
 
 	@Test
-	void shouldGetMessageById() throws Exception {
+	void shouldGetMessageById() throws MessagingException {
 		sendEmail("sender@example.com", "recipient@example.com", "Test Subject", "Test body");
 
 		List<Message> messages = client.getAllMessages();
@@ -52,7 +53,7 @@ class MailpitClientTest {
 	}
 
 	@Test
-	void shouldGetMessageHtml() throws Exception {
+	void shouldGetMessageHtml() throws MessagingException {
 		sendHtmlEmail("sender@example.com", "recipient@example.com", "HTML Test",
 				"<html><body><h1>Hello</h1></body></html>");
 
@@ -65,7 +66,7 @@ class MailpitClientTest {
 	}
 
 	@Test
-	void shouldGetMessagePlain() throws Exception {
+	void shouldGetMessagePlain() throws MessagingException {
 		sendEmail("sender@example.com", "recipient@example.com", "Plain Only", "Plain text only");
 
 		List<Message> messages = client.getAllMessages();
@@ -77,7 +78,7 @@ class MailpitClientTest {
 	}
 
 	@Test
-	void shouldDeleteSingleMessage() throws Exception {
+	void shouldDeleteSingleMessage() throws MessagingException {
 		sendEmail("sender@example.com", "recipient@example.com", "Email 1", "Body 1");
 		sendEmail("sender@example.com", "recipient@example.com", "Email 2", "Body 2");
 
@@ -102,7 +103,7 @@ class MailpitClientTest {
 	}
 
 	@Test
-	void shouldHandleMessageWithCreatedTimestamp() throws Exception {
+	void shouldHandleMessageWithCreatedTimestamp() throws MessagingException {
 		sendEmail("sender@example.com", "recipient@example.com", "Timestamp Test", "Body");
 
 		List<Message> messages = client.getAllMessages();
@@ -113,7 +114,7 @@ class MailpitClientTest {
 		assertThat(message.created()).isNotNull();
 	}
 
-	private void sendEmail(String from, String to, String subject, String body) throws Exception {
+	private void sendEmail(String from, String to, String subject, String body) throws MessagingException {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailpit.getSmtpHost());
 		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));
@@ -128,7 +129,7 @@ class MailpitClientTest {
 		Transport.send(message);
 	}
 
-	private void sendHtmlEmail(String from, String to, String subject, String htmlBody) throws Exception {
+	private void sendHtmlEmail(String from, String to, String subject, String htmlBody) throws MessagingException {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailpit.getSmtpHost());
 		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));

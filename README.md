@@ -30,7 +30,7 @@ class EmailServiceTest {
     static MailpitContainer mailpit = new MailpitContainer();
 
     @Test
-    void shouldSendEmail() throws Exception {
+    void shouldSendEmail() throws MessagingException {
         // Configure your mail sender
         Properties props = new Properties();
         props.put("mail.smtp.host", mailpit.getSmtpHost());

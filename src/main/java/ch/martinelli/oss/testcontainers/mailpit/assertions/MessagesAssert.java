@@ -134,6 +134,7 @@ public class MessagesAssert extends AbstractIterableAssert<MessagesAssert, List<
 	 * @return MessageAssert for the first message
 	 * @throws AssertionError if the list is empty
 	 */
+	@Override
 	public MessageAssert first() {
 		isNotNull();
 		Assertions.assertThat(actual).isNotEmpty();
@@ -145,6 +146,7 @@ public class MessagesAssert extends AbstractIterableAssert<MessagesAssert, List<
 	 * @return MessageAssert for the last message
 	 * @throws AssertionError if the list is empty
 	 */
+	@Override
 	public MessageAssert last() {
 		isNotNull();
 		Assertions.assertThat(actual).isNotEmpty();
@@ -157,6 +159,7 @@ public class MessagesAssert extends AbstractIterableAssert<MessagesAssert, List<
 	 * @return MessageAssert for the message at the index
 	 * @throws AssertionError if the index is out of bounds
 	 */
+	@Override
 	public MessageAssert element(int index) {
 		isNotNull();
 		Assertions.assertThat(actual).hasSizeGreaterThan(index);

@@ -19,6 +19,8 @@ import java.util.List;
  */
 public class MailpitClient {
 
+	private static final String APPLICATION_JSON = "application/json";
+
 	private final String baseUrl;
 
 	private final HttpClient httpClient;
@@ -41,7 +43,7 @@ public class MailpitClient {
 		try {
 			HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(baseUrl + "/api/v1/messages"))
-				.header("Accept", "application/json")
+				.header("Accept", APPLICATION_JSON)
 				.GET()
 				.build();
 
@@ -78,7 +80,7 @@ public class MailpitClient {
 		try {
 			HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(baseUrl + "/api/v1/message/" + id))
-				.header("Accept", "application/json")
+				.header("Accept", APPLICATION_JSON)
 				.GET()
 				.build();
 
@@ -203,7 +205,7 @@ public class MailpitClient {
 
 			HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(baseUrl + "/api/v1/messages"))
-				.header("Content-Type", "application/json")
+				.header("Content-Type", APPLICATION_JSON)
 				.method("DELETE", HttpRequest.BodyPublishers.ofString(jsonBody))
 				.build();
 

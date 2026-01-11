@@ -1,6 +1,7 @@
 package ch.martinelli.oss.testcontainers.mailpit;
 
 import jakarta.mail.Message.RecipientType;
+import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
@@ -9,12 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Import;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Properties;
@@ -56,7 +54,7 @@ class MailpitServiceConnectionTest {
 	}
 
 	@Test
-	void autowiredClientShouldWorkWithDynamicPorts() throws Exception {
+	void autowiredClientShouldWorkWithDynamicPorts() throws MessagingException {
 		// Send an email using the container's dynamic SMTP port
 		sendEmail("sender@example.com", "recipient@example.com", "Service Connection Test", "Testing autowired client");
 
@@ -89,7 +87,7 @@ class MailpitServiceConnectionTest {
 		assertThat(messages.get(0).subject()).isEqualTo("JavaMailSender Test");
 	}
 
-	private void sendEmail(String from, String to, String subject, String body) throws Exception {
+	private void sendEmail(String from, String to, String subject, String body) throws MessagingException {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailpit.getSmtpHost());
 		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));
