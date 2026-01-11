@@ -188,6 +188,9 @@ public class MessagesAssert extends AbstractIterableAssert<MessagesAssert, List<
 	 */
 	public MessagesAssert hasMessageSatisfying(int index, Consumer<MessageAssert> assertion) {
 		isNotNull();
+		if (index < 0) {
+			failWithMessage("Index must be non-negative but was: %d", index);
+		}
 		Assertions.assertThat(actual).hasSizeGreaterThan(index);
 		assertion.accept(new MessageAssert(actual.get(index)));
 		return this;

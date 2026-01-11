@@ -344,6 +344,16 @@ class MailpitAssertionsTest {
 				.isInstanceOf(AssertionError.class);
 		}
 
+		@Test
+		void shouldFailWhenIndexIsNegative() throws MessagingException {
+			sendEmail("sender@test.com", "recipient@test.com", "Email 1", "Body");
+
+			assertThatThrownBy(
+					() -> assertThat(mailpit).messages().hasMessageSatisfying(-1, msg -> msg.hasSubject("Email 1")))
+				.isInstanceOf(AssertionError.class)
+				.hasMessageContaining("Index must be non-negative but was: -1");
+		}
+
 	}
 
 	@Nested
