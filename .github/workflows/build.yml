@@ -37,4 +37,6 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Maven Test
-        run: ./mvnw -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Pcoverage -Dsonar.projectKey=martinellich_testcontainers-mailpit
+        run: ./mvnw -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Pcoverage
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
