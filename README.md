@@ -12,7 +12,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>ch.martinelli.oss</groupId>
     <artifactId>testcontainers-mailpit</artifactId>
-    <version>1.0.1</version>
+    <version>1.2.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -160,20 +160,14 @@ int count = client.getMessageCount();
 Message message = client.getMessage("abc123");
 
 // Get message content
-String html = client.getMessageHtml("abc123");    // HTML body
-String plain = client.getMessagePlain("abc123");  // Plain text body
+String html = client.getMessageHtml("abc123");     // HTML body
+String plain = client.getMessagePlain("abc123");   // Plain text body
 String source = client.getMessageSource("abc123"); // Raw email source
 
 // Delete messages
-client.
-
-deleteMessage("abc123");       // Delete specific message
-client.
-
-deleteMessages(List.of("id1", "id2")); // Delete multiple messages
-        client.
-
-deleteAllMessages();           // Delete all messages
+client.deleteMessage("abc123");               // Delete specific message
+client.deleteMessages(List.of("id1", "id2")); // Delete multiple messages
+client.deleteAllMessages();                   // Delete all messages
 ```
 
 ### AssertJ Assertions
