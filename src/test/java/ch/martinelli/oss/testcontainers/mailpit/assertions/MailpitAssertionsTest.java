@@ -339,8 +339,8 @@ class MailpitAssertionsTest {
 		void shouldFailWhenIndexOutOfBounds() throws MessagingException {
 			sendEmail("sender@test.com", "recipient@test.com", "Email 1", "Body");
 
-			assertThatThrownBy(() -> assertThat(mailpit).messages()
-				.hasMessageSatisfying(5, msg -> msg.hasSubject("Email 1")))
+			assertThatThrownBy(
+					() -> assertThat(mailpit).messages().hasMessageSatisfying(5, msg -> msg.hasSubject("Email 1")))
 				.isInstanceOf(AssertionError.class);
 		}
 
