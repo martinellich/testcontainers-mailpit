@@ -51,6 +51,7 @@
         <jackson.version>2.20.1</jackson.version>
         <junit.version>6.0.2</junit.version>
         <assertj.version>3.27.6</assertj.version>
+        <awaitility.version>4.2.2</awaitility.version>
         <slf4j.version>2.0.17</slf4j.version>
         <spring-boot.version>4.0.1</spring-boot.version>
 
@@ -110,6 +111,22 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- AssertJ (optional, for assertion support) -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Awaitility (optional, for async assertion support) -->
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -122,13 +139,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
 
