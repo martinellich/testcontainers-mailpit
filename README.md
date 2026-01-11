@@ -303,6 +303,13 @@ void shouldFilterMessages() {
         .allMessagesSatisfy(msg -> msg
             .isFrom("noreply@company.com")
             .hasNoAttachments());
+
+    // Assert on specific messages by index
+    assertThat(mailpit)
+        .messages()
+        .hasMessageSatisfying(0, msg -> msg.hasSubject("Welcome").isUnread())
+        .hasMessageSatisfying(1, msg -> msg.hasSubject("Confirmation").hasRecipient("user@example.com"))
+        .hasMessageSatisfying(2, msg -> msg.hasSubject("Newsletter"));
 }
 ```
 
