@@ -123,9 +123,7 @@ class MailpitClientTest {
 
 		String source = client.getMessageSource(messages.get(0).id());
 
-		assertThat(source).isNotNull();
-		assertThat(source).contains("Source Test");
-		assertThat(source).contains("sender@example.com");
+		assertThat(source).isNotNull().contains("Source Test").contains("sender@example.com");
 	}
 
 	@Test

@@ -25,6 +25,7 @@ import java.util.Properties;
 import static ch.martinelli.oss.testcontainers.mailpit.assertions.MailpitAssertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@SuppressWarnings({ "java:S5778", "java:S2925" })
 @Testcontainers
 class MailpitAssertionsTest {
 
