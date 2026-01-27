@@ -50,7 +50,7 @@
         <jakarta.mail.version>2.1.5</jakarta.mail.version>
         <jackson.version>2.21.0</jackson.version>
         <junit.version>6.0.2</junit.version>
-        <assertj.version>3.27.6</assertj.version>
+        <assertj.version>3.27.7</assertj.version>
         <awaitility.version>4.3.0</awaitility.version>
         <slf4j.version>2.0.17</slf4j.version>
         <spring-boot.version>4.0.1</spring-boot.version>
