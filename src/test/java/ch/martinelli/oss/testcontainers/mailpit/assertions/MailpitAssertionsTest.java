@@ -3,12 +3,16 @@ package ch.martinelli.oss.testcontainers.mailpit.assertions;
 import ch.martinelli.oss.testcontainers.mailpit.Address;
 import ch.martinelli.oss.testcontainers.mailpit.MailpitContainer;
 import ch.martinelli.oss.testcontainers.mailpit.Message;
+import jakarta.activation.DataHandler;
 import jakarta.mail.Message.RecipientType;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.util.ByteArrayDataSource;
 import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -594,11 +598,12 @@ class MailpitAssertionsTest {
 
 		@Test
 		void shouldFailWhenExpectingNoAttachmentsButHasAttachments() throws MessagingException {
-			// Since we can't easily send an email with attachments in this test,
-			// we just verify the method doesn't throw when there are no attachments
-			sendEmail("sender@test.com", "recipient@test.com", "Test", "Body");
+			sendEmailWithAttachment("sender@test.com", "recipient@test.com", "Test", "Body", "test.txt",
+					"attachment content");
 
-			assertThat(mailpit).firstMessage().hasNoAttachments();
+			assertThatThrownBy(() -> assertThat(mailpit).firstMessage().hasNoAttachments())
+				.isInstanceOf(AssertionError.class)
+				.hasMessageContaining("Expected message to have no attachments");
 		}
 
 	}
@@ -943,6 +948,35 @@ class MailpitAssertionsTest {
 		message.setRecipient(RecipientType.CC, new InternetAddress(cc));
 		message.setSubject(subject);
 		message.setText(body);
+
+		Transport.send(message);
+	}
+
+	private void sendEmailWithAttachment(String from, String to, String subject, String body, String attachmentName,
+			String attachmentContent) throws MessagingException {
+		Properties props = new Properties();
+		props.put("mail.smtp.host", mailpit.getSmtpHost());
+		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));
+
+		Session session = Session.getInstance(props);
+		MimeMessage message = new MimeMessage(session);
+		message.setFrom(new InternetAddress(from));
+		message.setRecipient(RecipientType.TO, new InternetAddress(to));
+		message.setSubject(subject);
+
+		MimeMultipart multipart = new MimeMultipart();
+
+		MimeBodyPart textPart = new MimeBodyPart();
+		textPart.setText(body);
+		multipart.addBodyPart(textPart);
+
+		MimeBodyPart attachmentPart = new MimeBodyPart();
+		attachmentPart
+			.setDataHandler(new DataHandler(new ByteArrayDataSource(attachmentContent.getBytes(), "text/plain")));
+		attachmentPart.setFileName(attachmentName);
+		multipart.addBodyPart(attachmentPart);
+
+		message.setContent(multipart);
 
 		Transport.send(message);
 	}
