@@ -81,6 +81,7 @@ public class MailpitAutoConfiguration {
 		var props = new Properties();
 		props.put("mail.smtp.localhost", "localhost");
 		props.put("mail.from", "noreply@localhost");
+
 		mailSender.setJavaMailProperties(props);
 		return mailSender;
 	}
