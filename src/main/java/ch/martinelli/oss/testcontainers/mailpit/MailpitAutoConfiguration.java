@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
+import java.util.Properties;
+
 /**
  * Auto-configuration for Mailpit.
  * <p>
@@ -76,6 +78,10 @@ public class MailpitAutoConfiguration {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 		mailSender.setHost(connectionDetails.getHost());
 		mailSender.setPort(connectionDetails.getPort());
+		var props = new Properties();
+		props.put("mail.smtp.localhost", "localhost");
+		props.put("mail.from", "noreply@localhost");
+		mailSender.setJavaMailProperties(props);
 		return mailSender;
 	}
 
