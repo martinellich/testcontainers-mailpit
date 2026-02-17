@@ -107,6 +107,8 @@ class MailpitContainerTest {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailpit.getSmtpHost());
 		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));
+		props.put("mail.smtp.localhost", "localhost");
+		props.put("mail.from", "noreply@localhost");
 
 		Session session = Session.getInstance(props);
 		MimeMessage message = new MimeMessage(session);
@@ -123,6 +125,8 @@ class MailpitContainerTest {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailpit.getSmtpHost());
 		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));
+		props.put("mail.smtp.localhost", "localhost");
+		props.put("mail.from", "noreply@localhost");
 
 		Session session = Session.getInstance(props);
 		MimeMessage message = new MimeMessage(session);

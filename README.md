@@ -12,7 +12,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>ch.martinelli.oss</groupId>
     <artifactId>testcontainers-mailpit</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -35,6 +35,8 @@ class EmailServiceTest {
         Properties props = new Properties();
         props.put("mail.smtp.host", mailpit.getSmtpHost());
         props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));
+        props.put("mail.smtp.localhost", "localhost");
+        props.put("mail.from", "noreply@localhost");
 
         Session session = Session.getInstance(props);
         MimeMessage message = new MimeMessage(session);

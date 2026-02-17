@@ -27,6 +27,7 @@ import java.util.List;
  *     .isPresent();
  * }</pre>
  */
+@SuppressWarnings("java:S2160")
 public class MailpitContainerAssert extends AbstractAssert<MailpitContainerAssert, MailpitContainer> {
 
 	private Duration timeout = Duration.ofSeconds(10);

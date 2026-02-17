@@ -17,6 +17,7 @@ import java.util.List;
  *
  * @see <a href="https://mailpit.axllent.org/docs/api-v1/">Mailpit API Documentation</a>
  */
+@SuppressWarnings({ "java:S2142", "java:S1075" })
 public class MailpitClient {
 
 	private static final String APPLICATION_JSON = "application/json";

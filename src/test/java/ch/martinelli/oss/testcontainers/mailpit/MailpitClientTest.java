@@ -114,10 +114,85 @@ class MailpitClientTest {
 		assertThat(message.created()).isNotNull();
 	}
 
+	@Test
+	void shouldGetMessageSource() throws MessagingException {
+		sendEmail("sender@example.com", "recipient@example.com", "Source Test", "This is the raw body");
+
+		List<Message> messages = client.getAllMessages();
+		assertThat(messages).hasSize(1);
+
+		String source = client.getMessageSource(messages.get(0).id());
+
+		assertThat(source).isNotNull().contains("Source Test").contains("sender@example.com");
+	}
+
+	@Test
+	void shouldReturnNullForNonExistentMessageSource() {
+		String source = client.getMessageSource("nonexistent-id");
+
+		assertThat(source).isNull();
+	}
+
+	@Test
+	void shouldReturnNullForNonExistentMessageHtml() {
+		String html = client.getMessageHtml("nonexistent-id");
+
+		assertThat(html).isNull();
+	}
+
+	@Test
+	void shouldReturnNullForNonExistentMessagePlain() {
+		String plain = client.getMessagePlain("nonexistent-id");
+
+		assertThat(plain).isNull();
+	}
+
+	@Test
+	void shouldDeleteMultipleMessages() throws MessagingException {
+		sendEmail("sender@example.com", "recipient@example.com", "Email 1", "Body 1");
+		sendEmail("sender@example.com", "recipient@example.com", "Email 2", "Body 2");
+		sendEmail("sender@example.com", "recipient@example.com", "Email 3", "Body 3");
+
+		List<Message> messages = client.getAllMessages();
+		assertThat(messages).hasSize(3);
+
+		client.deleteMessages(List.of(messages.get(0).id(), messages.get(1).id()));
+
+		assertThat(client.getMessageCount()).isEqualTo(1);
+	}
+
+	@Test
+	void shouldGetMessageRecipients() throws MessagingException {
+		sendEmailToMultiple("sender@example.com", new String[] { "a@test.com", "b@test.com" }, "Multi Recipient",
+				"Body");
+
+		List<Message> messages = client.getAllMessages();
+		assertThat(messages).hasSize(1);
+
+		Message message = messages.get(0);
+
+		assertThat(message.recipients()).hasSize(2);
+		assertThat(message.recipients().get(0).address()).isEqualTo("a@test.com");
+		assertThat(message.recipients().get(1).address()).isEqualTo("b@test.com");
+	}
+
+	@Test
+	void shouldReturnEmptyListForNullTo() throws MessagingException {
+		sendEmail("sender@example.com", "recipient@example.com", "Test", "Body");
+
+		List<Message> messages = client.getAllMessages();
+		Message message = messages.get(0);
+
+		// recipients() should never return null
+		assertThat(message.recipients()).isNotNull();
+	}
+
 	private void sendEmail(String from, String to, String subject, String body) throws MessagingException {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailpit.getSmtpHost());
 		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));
+		props.put("mail.smtp.localhost", "localhost");
+		props.put("mail.from", "noreply@localhost");
 
 		Session session = Session.getInstance(props);
 		MimeMessage message = new MimeMessage(session);
@@ -133,6 +208,8 @@ class MailpitClientTest {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", mailpit.getSmtpHost());
 		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));
+		props.put("mail.smtp.localhost", "localhost");
+		props.put("mail.from", "noreply@localhost");
 
 		Session session = Session.getInstance(props);
 		MimeMessage message = new MimeMessage(session);
@@ -140,6 +217,25 @@ class MailpitClientTest {
 		message.setRecipient(RecipientType.TO, new InternetAddress(to));
 		message.setSubject(subject);
 		message.setContent(htmlBody, "text/html");
+
+		Transport.send(message);
+	}
+
+	private void sendEmailToMultiple(String from, String[] to, String subject, String body) throws MessagingException {
+		Properties props = new Properties();
+		props.put("mail.smtp.host", mailpit.getSmtpHost());
+		props.put("mail.smtp.port", String.valueOf(mailpit.getSmtpPort()));
+		props.put("mail.smtp.localhost", "localhost");
+		props.put("mail.from", "noreply@localhost");
+
+		Session session = Session.getInstance(props);
+		MimeMessage message = new MimeMessage(session);
+		message.setFrom(new InternetAddress(from));
+		for (String recipient : to) {
+			message.addRecipient(RecipientType.TO, new InternetAddress(recipient));
+		}
+		message.setSubject(subject);
+		message.setText(body);
 
 		Transport.send(message);
 	}

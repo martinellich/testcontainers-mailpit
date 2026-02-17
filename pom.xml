@@ -6,7 +6,7 @@
 
     <groupId>ch.martinelli.oss</groupId>
     <artifactId>testcontainers-mailpit</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <packaging>jar</packaging>
 
     <name>Testcontainers Mailpit</name>
@@ -48,12 +48,12 @@
 
         <testcontainers.version>2.0.3</testcontainers.version>
         <jakarta.mail.version>2.1.5</jakarta.mail.version>
-        <jackson.version>2.20.1</jackson.version>
+        <jackson.version>2.21.0</jackson.version>
         <junit.version>6.0.2</junit.version>
-        <assertj.version>3.27.6</assertj.version>
-        <awaitility.version>4.2.2</awaitility.version>
+        <assertj.version>3.27.7</assertj.version>
+        <awaitility.version>4.3.0</awaitility.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <spring-boot.version>4.0.1</spring-boot.version>
+        <spring-boot.version>4.0.2</spring-boot.version>
 
         <spring-javaformat-maven-plugin.version>0.0.47</spring-javaformat-maven-plugin.version>
         <jacoco.version>0.8.14</jacoco.version>
@@ -112,7 +112,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>7.0.0</version>
+            <version>7.0.3</version>
             <optional>true</optional>
         </dependency>
 
@@ -164,7 +164,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.24</version>
+            <version>1.5.27</version>
             <scope>test</scope>
         </dependency>
 
@@ -221,12 +221,6 @@
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <version>${jacoco.version}</version>
-                        <configuration>
-                            <excludes>
-                                <exclude>ch/martinelli/oss/registration/RegistrationApplication.*</exclude>
-                                <exclude>ch/martinelli/oss/registration/db/**/**.*</exclude>
-                            </excludes>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>prepare-agent</id>
