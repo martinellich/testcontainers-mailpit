@@ -55,7 +55,7 @@
         <slf4j.version>2.0.18</slf4j.version>
         <spring-boot.version>4.1.1</spring-boot.version>
 
-        <spring-javaformat-maven-plugin.version>0.0.47</spring-javaformat-maven-plugin.version>
+        <spring-javaformat-maven-plugin.version>0.0.48</spring-javaformat-maven-plugin.version>
         <jacoco.version>0.8.15</jacoco.version>
 
         <sonar.organization>martinellich</sonar.organization>
