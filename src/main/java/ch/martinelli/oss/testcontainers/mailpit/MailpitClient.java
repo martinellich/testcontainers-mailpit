@@ -1,7 +1,7 @@
 package ch.martinelli.oss.testcontainers.mailpit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.net.URI;
@@ -33,8 +33,7 @@ public class MailpitClient {
 	public MailpitClient(String baseUrl) {
 		this.baseUrl = baseUrl;
 		this.httpClient = HttpClient.newHttpClient();
-		this.objectMapper = new ObjectMapper();
-		this.objectMapper.registerModule(new JavaTimeModule());
+		this.objectMapper = JsonMapper.shared();
 	}
 
 	/**
