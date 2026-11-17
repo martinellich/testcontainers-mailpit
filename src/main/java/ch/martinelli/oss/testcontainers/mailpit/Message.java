@@ -2,7 +2,7 @@ package ch.martinelli.oss.testcontainers.mailpit;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -20,7 +20,7 @@ public record Message(@JsonProperty("ID") String id, @JsonProperty("MessageID") 
 		@JsonProperty("From") Address from, @JsonProperty("To") List<Address> to, @JsonProperty("Cc") List<Address> cc,
 		@JsonProperty("Bcc") List<Address> bcc, @JsonProperty("ReplyTo") List<Address> replyTo,
 		@JsonProperty("Subject") String subject, @JsonProperty("Size") int size,
-		@JsonProperty("Created") Instant created, @JsonProperty("Read") boolean read,
+		@JsonProperty("Created") Instant created, @JsonProperty("Read") Boolean read,
 		@JsonProperty("Attachments") JsonNode attachmentsNode, @JsonProperty("Snippet") String snippet,
 		@JsonProperty("Tags") List<String> tags) {
 
