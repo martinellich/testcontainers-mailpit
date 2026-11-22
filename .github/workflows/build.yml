@@ -2,8 +2,8 @@ name: Build
 
 on:
   push:
-    branches-ignore:
-      - main
+    branches:
+      - develop
   pull_request:
     branches-ignore:
       - main
