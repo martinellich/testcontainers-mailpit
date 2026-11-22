@@ -2,6 +2,7 @@ package ch.martinelli.oss.testcontainers.mailpit;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -23,11 +24,17 @@ import java.util.Properties;
  * <p>
  * This configuration also provides a {@link JavaMailSender} bean configured from
  * {@link MailpitConnectionDetails} when present.
+ * <p>
+ * The auto-configuration can be disabled by setting {@code mailpit.enabled=false}, for
+ * example in a profile-specific properties file. Spring Boot's own mail
+ * auto-configuration ({@code spring.mail.*}) then applies as usual.
  *
  * @see MailpitConnectionDetails
  * @see MailpitContainerConnectionDetailsFactory
  */
-@AutoConfiguration(beforeName = "org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration")
+@AutoConfiguration(beforeName = { "org.springframework.boot.mail.autoconfigure.MailSenderAutoConfiguration",
+		"org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration" })
+@ConditionalOnBooleanProperty(name = "mailpit.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(MailpitProperties.class)
 public class MailpitAutoConfiguration {
 
