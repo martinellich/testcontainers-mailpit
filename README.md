@@ -122,6 +122,19 @@ mailpit.port=1025
 mailpit.http-url=http://localhost:8025
 ```
 
+### Disabling the Auto-Configuration
+
+When the library is on the classpath, its auto-configuration takes precedence over Spring Boot's mail
+auto-configuration. This also applies to a `TestApplication` started from the test classpath. To run against a
+real mail server instead, disable the Mailpit auto-configuration, for example in `application-dev.properties`:
+
+```properties
+mailpit.enabled=false
+```
+
+No `JavaMailSender`, `MailpitClient`, or property-based `MailpitConnectionDetails` beans are then created by this
+library, and Spring Boot's `spring.mail.*` configuration applies as usual.
+
 ### Container Configuration
 
 The `MailpitContainer` exposes two ports:
