@@ -1,9 +1,11 @@
 package ch.martinelli.oss.testcontainers.mailpit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.TextNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.IntNode;
+import tools.jackson.databind.node.StringNode;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -14,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MessageTest {
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper = JsonMapper.shared();
 
 	@Test
 	void shouldReturnZeroAttachmentsWhenNull() {
@@ -43,7 +45,7 @@ class MessageTest {
 
 	@Test
 	void shouldReturnZeroForNonIntNonArrayNode() {
-		Message message = createMessage(new TextNode("not a number"));
+		Message message = createMessage(new StringNode("not a number"));
 
 		assertThat(message.attachmentCount()).isZero();
 	}
@@ -67,7 +69,7 @@ class MessageTest {
 		assertThat(message.recipients()).isEmpty();
 	}
 
-	private Message createMessage(com.fasterxml.jackson.databind.JsonNode attachmentsNode) {
+	private Message createMessage(JsonNode attachmentsNode) {
 		return new Message("id", "messageId", new Address("Sender", "sender@example.com"),
 				Collections.singletonList(new Address("Recipient", "recipient@example.com")), null, null, null,
 				"Subject", 100, Instant.now(), false, attachmentsNode, "Snippet", null);
